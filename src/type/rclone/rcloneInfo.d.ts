@@ -1,4 +1,4 @@
-import { Child, Command } from "@tauri-apps/api/shell";
+import { Child, Command } from "@tauri-apps/plugin-shell";
 import { RcloneStats } from "./stats";
 
 interface RcloneInfo {
@@ -18,6 +18,11 @@ interface RcloneInfo {
             port: number,
         }
     },
+    localArgs:{
+        path:{
+            tempDir?:string
+        }
+    }
     version: RcloneVersion,
     stats: RcloneStats,
     storageList: Array<StorageList>,

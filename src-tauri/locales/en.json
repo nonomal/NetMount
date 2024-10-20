@@ -477,5 +477,22 @@
     "description.alist_v3": "AList V3 is an updated version of AList, offering more stable performance and additional features.",
     "description.baidunetdisk": "Baidu Cloud Disk is a cloud storage service provided by Baidu, supporting large-capacity file storage and rapid sharing.",
     "description.baiduphoto": "Yi Ke Album is a photo stoshare, which is convenient for collaboration and distribution.",
-    "description.123panshare": "123 Pan Share functionality enables users to share files stored on 123 Pan, facilitating collaboration and distribution."
+    "description.123panshare": "123 Pan Share functionality enables users to share files stored on 123 Pan, facilitating collaboration and distribution.",
+    "storage.NeteaseMusic": "NetEase Cloud Music",
+    "storage.Lark": "Lark Drive",
+    "storage.ThunderX": "Thunder X",
+    "storage.ThunderXExpert": "Thunder X Expert Edition",
+    "description.lark": "Lark Drive lets you save and manage all your content in cloud storage anytime, anywhere, on any device.",
+    "description.neteasemusic": "NetEase Cloud Music is a music product focused on discovering and sharing.",
+    "description.thunderx": "Thunder X",
+    "description.thunderxexpert": "Thunder X Expert Edition",
+    "restartself_to_take_effect": "Restart to take effect",
+    "unable_to_obtain_transmission_speed":"The specific transmission speed may not be available at present, but the transmission is still in progress.",
+
+    "temp_path":"Temporary path",
+    "cache_path":"Cache path",
+    "please_select_cache_dir":"Please select a cache directory",
+    "select":"Select",
+    "ask_restartself":"Do you want to restart the software?",
+    "after_changing_the_cache_directory_tips":"After changing the cache directory, please manually clear the old cache directory and restart the software for it to take effect."
 }

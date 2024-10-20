@@ -1,6 +1,6 @@
-import { invoke } from "@tauri-apps/api"
+import { invoke } from "@tauri-apps/api/core"
 import { NMConfig, OSInfo } from "../type/config"
-import { randomString } from "../utils/utils"
+import { mergeObjects, randomString } from "../utils/utils"
 
 const roConfig = {
     url: {
@@ -44,10 +44,10 @@ const roConfig = {
                 defIndex: 0,
                 select: [
                     { name: '简体中文', value: 'cn', langCode: 'zh-cn' },
+                    { name: '繁體中文', value: 'ct', langCode: 'zh-tw' },
                     { name: 'English', value: 'en', langCode: 'en-us' },
-                    /*                     { name: '繁體中文(臺灣)', value: 'cht', langCode: 'zh-tw' },
-                                        { name: '繁體中文(香港)', value: 'cht', langCode: 'zh-hk' },
-                                        { name: 'Русский язык', value: 'ru', langCode: 'ru-RU' }, */
+                    /*{ name: '繁體中文(香港)', value: 'cht', langCode: 'zh-hk' },
+                    { name: 'Русский язык', value: 'ru', langCode: 'ru-RU' }, */
                 ]
             }
         }
@@ -65,6 +65,10 @@ let nmConfig: NMConfig = {
     settings: {
         themeMode: roConfig.options.setting.themeMode.select[roConfig.options.setting.themeMode.defIndex],
         startHide: false,
+        language: undefined,
+        path: {
+            cacheDir: undefined
+        }
     },
     framework: {
         rclone: {
@@ -83,15 +87,17 @@ const setNmConfig = (config: NMConfig) => {
 }
 
 const readNmConfig = async () => {
-    await invoke('read_config_file').then(configData => {
-        setNmConfig({ ...nmConfig, ...(configData as NMConfig) })
+
+    await invoke('get_config').then(configData => {
+
+        setNmConfig(mergeObjects(nmConfig, configData as NMConfig))
     }).catch(err => {
         console.log(err);
     })
 }
 const saveNmConfig = async () => {
-    await invoke('write_config_file', {
-        configData: nmConfig
+    await invoke('update_config', {
+        data: nmConfig
     });
 }
 

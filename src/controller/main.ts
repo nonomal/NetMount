@@ -1,5 +1,4 @@
-import { invoke, process } from "@tauri-apps/api"
-import { nmConfig, readNmConfig, roConfig, saveNmConfig, setNmConfig } from "../services/config"
+import { nmConfig, osInfo, readNmConfig, roConfig, saveNmConfig, setNmConfig } from "../services/config"
 import { rcloneInfo } from "../services/rclone"
 import { rclone_api_post } from "../utils/rclone/request"
 import { startUpdateCont } from "./stats/continue"
@@ -7,7 +6,7 @@ import { reupMount } from "./storage/mount/mount"
 import { reupStorage } from "./storage/storage"
 import { listenWindow, windowsHide } from "./window"
 import { NMConfig } from "../type/config"
-import { randomString, restartSelf, sleep } from "../utils/utils"
+import { formatPath, randomString, restartSelf, sleep } from "../utils/utils"
 import { t } from "i18next"
 import { startRclone, stopRclone } from "../utils/rclone/process"
 import { getOsInfo } from "../utils/tauri/osInfo"
@@ -23,6 +22,7 @@ import { alist_api_get } from "../utils/alist/request"
 import { alistInfo } from "../services/alist"
 import { addAlistInRclone } from "../utils/alist/alist"
 import { Test } from "./test"
+import { Notification } from "@arco-design/web-react"
 
 async function init(setStartStr: Function) {
 
@@ -35,11 +35,11 @@ async function init(setStartStr: Function) {
     setStartStr(t('read_config'))
     await readNmConfig()
 
-
     if (nmConfig.settings.startHide) {
         windowsHide()
     }
 
+    //设置语言
     if (nmConfig.settings.language) {
         await setLocalized(nmConfig.settings.language);
     } else {
@@ -49,6 +49,11 @@ async function init(setStartStr: Function) {
         nmConfig.settings.language = matchingLang?.value || roConfig.options.setting.language.select[roConfig.options.setting.language.defIndex].value;
         await setLocalized(nmConfig.settings.language);
     }
+
+    //设置缓存路径
+    if (!nmConfig.settings.path.cacheDir) {
+        nmConfig.settings.path.cacheDir=formatPath(roConfig.env.path.homeDir+'/.cache/netmount', osInfo.platform === "windows")
+    } 
 
     setThemeMode(nmConfig.settings.themeMode)
 
@@ -61,7 +66,7 @@ async function init(setStartStr: Function) {
     await checkNotice()
 
     startUpdateCont()
-    
+
     await reupRcloneVersion()
     await reupAlistVersion()
     await updateStorageInfoList()
@@ -69,13 +74,25 @@ async function init(setStartStr: Function) {
     await addAlistInRclone()
     //await reupStorage()//addAlistInRclone中结尾有reupStorage所以注释
     await reupMount()
-    
+
     //自动挂载
     await autoMount()
 
     //await Test()
     //开始任务队列
-    await startTaskScheduler()    
+    await startTaskScheduler()
+
+    await main()
+}
+
+async function main() {
+    if (window.location.pathname.includes('mount')) {
+        Notification.success({
+            id: 'install_success',
+            title: t('success'),
+            content: 'WinFsp '+t('install_success'),
+        })
+    }
 }
 
 async function reupRcloneVersion() {
@@ -93,9 +110,7 @@ async function reupAlistVersion() {
 
 }
 
-function main() {
 
-}
 
 async function exit(isRestartSelf: boolean = false) {
     try {
@@ -105,7 +120,8 @@ async function exit(isRestartSelf: boolean = false) {
         await saveNmConfig()
     } finally {
         if (isRestartSelf) {
-            await restartSelf()
+            //await restartSelf()
+            location.reload()
         } else {
             await process.exit();
         }

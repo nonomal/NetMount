@@ -1,4 +1,4 @@
-import { Child, Command } from "@tauri-apps/api/shell";
+import { Child, Command } from "@tauri-apps/plugin-shell";
 
 interface AlistInfo {
     markInRclone:string;
@@ -16,6 +16,7 @@ interface AlistInfo {
         scheme?: {
             http_port?: number;
         };
+        temp_dir?: string;
     };
     version:{
         version: string;

@@ -1,11 +1,15 @@
 import { listen } from "@tauri-apps/api/event";
-import { appWindow } from "@tauri-apps/api/window"
 import { exit } from "./main";
 import { saveNmConfig } from "../services/config";
+import { webviewWindow } from "@tauri-apps/api";
+import { getCurrentWebview  } from "@tauri-apps/api/webview";
+
+export const window = webviewWindow.getCurrentWebviewWindow()
 
 function listenWindow() {
-    appWindow.listen('tauri://close-requested', () => {
-        windowsHide()
+    window.listen('tauri://close-requested', () => {
+        windowsHide();
+        return false
     })
 
 
@@ -28,16 +32,13 @@ function listenWindow() {
 
 function windowsHide() {
     saveNmConfig()
-    appWindow.hide()
+    window.hide()
 }
 
 function windowsMini() {
-    appWindow.minimize()
+    window.minimize()
 }
 
-listen('exit_app', async () => {
-    await exit()
-});
 
 export { listenWindow, windowsHide, windowsMini }
 

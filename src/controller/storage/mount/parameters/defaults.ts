@@ -22,8 +22,8 @@ const vfsCacheModeParam: StorageParamItemType = {
 const defaultVfsConfig: VfsOptions = {
     ReadOnly: false,
     CacheMaxAge: 3600000000000,
-    CacheMaxSize: -1,
-    CacheMode: 'full',
+    CacheMaxSize: 10737418240,//10GB
+    CacheMode: 'writes',
     CachePollInterval: 60000000000,
     CaseInsensitive: false,
     ChunkSize: 67108864,

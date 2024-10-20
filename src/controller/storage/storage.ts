@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api"
 import { hooks } from "../../services/hook"
 import { rcloneInfo } from "../../services/rclone"
 import { FileInfo, StorageList, StorageSpace } from "../../type/rclone/rcloneInfo"
@@ -282,11 +281,20 @@ async function moveDir(storageName: string, path: string, destStoragename: strin
 
 //sync,需完整path(pathF2f)
 async function sync(storageName: string, path: string, destStoragename: string, destPath: string, bisync?: boolean) {//bisync:双向同步
-    const backData = await rclone_api_post(
-        !bisync ? '/sync/sync' : '/sync/bisync', {
-        srcFs: convertStoragePath(storageName, path, true),
-        dstFs: convertStoragePath(destStoragename, destPath, true)
-    }, true)
+    if (!bisync) {
+        const backData = await rclone_api_post(
+            '/sync/sync', {//同步
+            srcFs: convertStoragePath(storageName, path, true),
+            dstFs: convertStoragePath(destStoragename, destPath, true)
+        }, true)
+    } else {
+        const backData = await rclone_api_post(
+            '/sync/bisync', {//双向同步
+            path1: convertStoragePath(storageName, path, true),
+            path2: convertStoragePath(destStoragename, destPath, true)
+        }, true)
+    }
+
 }
 
 const uploadFileRequest = (option: RequestOptions, storageName: string, path: string) => {
